@@ -5,7 +5,7 @@ import { Hanken_Grotesk } from "next/font/google";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "Hello World",
+  title: { template: "Higeco - %s", default: "Higeco" },
 };
 
 const hankenGrotesk = Hanken_Grotesk({

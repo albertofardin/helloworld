@@ -84,7 +84,7 @@ const BtnLink = ({
         !!label ? "px-[7px]" : "px-0",
         variant === "bold" && "bg-[var(--btn-color)]",
         variant === "light" &&
-          "border border-transparent hover:border-[var(--btn-color)] hover:bg-[color-mix(in_srgb,var(--btn-color)_15%,var(--button-bg))]",
+          "border border-transparent hover:border-[var(--btn-color)]",
         selected &&
           "border-[var(--btn-color)] bg-[color-mix(in_srgb,var(--btn-color)_15%,var(--button-bg))]",
         className

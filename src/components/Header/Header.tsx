@@ -8,8 +8,9 @@ import BtnLink from "../BtnLink";
 import logo from "@/assets/higeco-more-logo.png";
 
 const links = [
-  { href: "/", label: "Home" },
+  { href: "/", label: "Esercizio" },
   { href: "/components", label: "Componenti" },
+  { href: "/api-docs", label: "Api" },
 ];
 
 const Header = () => {

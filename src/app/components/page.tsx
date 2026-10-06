@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Docs from "./_docs/Docs";
 
 export const metadata: Metadata = {
-  title: "Componenti · Hello World",
+  title: "Components",
 };
 
 export default function ComponentsPage() {
