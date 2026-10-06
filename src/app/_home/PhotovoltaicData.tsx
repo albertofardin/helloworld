@@ -26,7 +26,7 @@ export default async function PhotovoltaicData({
   return (
     <WeekNavigationProvider>
       <div className="mx-auto flex min-h-0 w-full flex-1 flex-col">
-        <div className="mx-auto max-w-5xl w-full flex-1 flex flex-col gap-4 p-6">
+        <div className="mx-auto max-w-5xl w-full flex-1 flex flex-col gap-4 p-6 pb-24">
           <InfoHeader plant={plant} device={device} log={log} />
           <Divider />
           <WeekSelector

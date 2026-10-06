@@ -89,11 +89,25 @@ bun start            # avvia la build
 bun run lint         # eslint
 bun run format       # prettier --write
 bun run type-check   # tsc --noEmit
+bun run test         # unit test (Vitest)
+bun run test:watch   # unit test in watch
 ```
+
+## Test
+
+Gli unit test usano [Vitest](https://vitest.dev) e stanno accanto al file che verificano (`*.test.ts`). Vanno lanciati con `bun run test`: `bun test` avvierebbe il test runner di Bun, che non è quello usato qui.
+
+| File                           | Cosa verifica                                                                             |
+| ------------------------------ | ----------------------------------------------------------------------------------------- |
+| `src/lib/kpi.test.ts`          | calcolo di E_real, E_module e PR, giornaliero e settimanale, e i casi di dati mancanti    |
+| `src/lib/higeco.test.ts`       | client delle API con un finto portale: autenticazione, scelta della settimana, fusi orari |
+| `src/app/_home/format.test.ts` | formattazione di date, numeri e percentuali                                               |
+
+I test non chiamano il portale Higeco e non richiedono il token.
 
 ## Stack
 
-Next.js 16 (App Router), React 19, TypeScript, Tailwind 3, Radix, Recharts (grafici).
+Next.js 16 (App Router), React 19, TypeScript, Tailwind 3, Radix, Recharts (grafici), Vitest (test).
 
 ## Struttura
 
