@@ -1,14 +1,13 @@
-import Text from "@/components/Text";
+import { Suspense } from "react";
+import HomeLoading from "./_home/HomeLoading";
+import PhotovoltaicData from "./_home/PhotovoltaicData";
+
+export const dynamic = "force-dynamic";
 
 export default function HomePage() {
   return (
-    <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6">
-      <Text size={8} weight="bolder">
-        Hello World
-      </Text>
-      <Text size={3} className="text-muted-fg">
-        Pagina iniziale
-      </Text>
-    </div>
+    <Suspense fallback={<HomeLoading />}>
+      <PhotovoltaicData />
+    </Suspense>
   );
 }
