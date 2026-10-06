@@ -21,3 +21,12 @@ export const formatPercent = (value: number | null) =>
 
 // day è "YYYY-MM-DD" → "DD/MM/YYYY"
 export const formatDay = (day: string) => day.split("-").reverse().join("/");
+
+// Giorno "YYYY-MM-DD" dell'istante indicato, nel fuso orario dato
+export const toDay = (utc: number, timeZone: string) =>
+  new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date(utc * 1000));

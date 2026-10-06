@@ -10,10 +10,19 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ week?: string | string[] }>;
+}) {
+  const { week } = await searchParams;
+  const weekFrom = typeof week === "string" ? week : undefined;
+
   return (
+    // spinner a tutta pagina solo al primo caricamento: il cambio settimana è
+    // una transition gestita da WeekNavigationProvider
     <Suspense fallback={<HomeLoading />}>
-      <PhotovoltaicData />
+      <PhotovoltaicData weekFrom={weekFrom} />
     </Suspense>
   );
 }

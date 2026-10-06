@@ -11,7 +11,7 @@ export interface IInfoCard {
 
 export default function InfoCard({ title, icon, name, details }: IInfoCard) {
   return (
-    <Card className="flex-col items-stretch justify-start gap-2 p-4">
+    <Card className="flex-col items-stretch justify-start gap-2 p-4 border-primary">
       <div>
         <div className="flex items-center gap-1.5">
           <Icon size="sm" className="text-primary">

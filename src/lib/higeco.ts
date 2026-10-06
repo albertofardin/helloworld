@@ -93,11 +93,21 @@ function timezoneOffset(timeZone: string, utc: number) {
   return local / 1000 - utc;
 }
 
+// "YYYY-MM-DD" → mezzanotte di quel giorno come epoch "locale" (vedi
+// getLogData più sotto); null se la stringa non è una data valida
+function parseDay(day?: string) {
+  if (!day || !/^\d{4}-\d{2}-\d{2}$/.test(day)) return null;
+  const time = Date.parse(`${day}T00:00:00Z`);
+  return Number.isNaN(time) ? null : time / 1000;
+}
+
 // L'API segnala i valori non validi con stringhe tipo "#E2"
 const toNumber = (value: unknown) =>
   typeof value === "number" && Number.isFinite(value) ? value : null;
 
-export async function getPhotovoltaicData() {
+// weekFrom ("YYYY-MM-DD", giorno nel fuso dell'impianto) seleziona i 7 giorni
+// a partire da quella data; senza, si usa l'ultima settimana.
+export async function getPhotovoltaicData(weekFrom?: string) {
   const token = await authenticate();
 
   const plants = await get<Plant[]>(token, "/plants");
@@ -149,30 +159,48 @@ export async function getPhotovoltaicData() {
   };
 
   const now = Math.floor(Date.now() / 1000);
+  const base = { now, plant, device, log, items: { energy, radiation } };
+
+  const selected = parseDay(weekFrom);
+  if (selected !== null) {
+    // estremo finale escluso: la mezzanotte successiva è già un altro giorno
+    const period = { from: toUtc(selected), to: toUtc(selected + WEEK) - 1 };
+    return {
+      ...base,
+      selected: true,
+      week: { period, samples: await getSamples(period) },
+      emptyLastWeek: null,
+    };
+  }
+
   const lastWeek: Period = { from: now - WEEK, to: now };
   const samples = await getSamples(lastWeek);
+  if (samples.length) {
+    return {
+      ...base,
+      selected: false,
+      week: { period: lastWeek, samples },
+      emptyLastWeek: null,
+    };
+  }
 
-  // Se nell'ultima settimana il datalogger non ha registrato nulla, recupera
-  // anche l'ultima settimana in cui i dati sono disponibili.
-  let lastAvailable: { period: Period; samples: Sample[] } | null = null;
-  if (!samples.length) {
-    const last = await get<{ items: { utc: number }[] }>(
-      token,
-      `/getLastValue/${plant.id}/${device.id}/${log.id}/${energy.id}`
-    );
-    const lastUtc = last.items?.[0]?.utc;
-    if (lastUtc) {
-      const period = { from: lastUtc - WEEK, to: lastUtc };
-      lastAvailable = { period, samples: await getSamples(period) };
-    }
+  // Se nell'ultima settimana il datalogger non ha registrato nulla, si
+  // ripiega sull'ultima settimana in cui i dati sono disponibili.
+  let week = { period: lastWeek, samples };
+  const last = await get<{ items: { utc: number }[] }>(
+    token,
+    `/getLastValue/${plant.id}/${device.id}/${log.id}/${energy.id}`
+  );
+  const lastUtc = last.items?.[0]?.utc;
+  if (lastUtc) {
+    const period = { from: lastUtc - WEEK, to: lastUtc };
+    week = { period, samples: await getSamples(period) };
   }
 
   return {
-    plant,
-    device,
-    log,
-    items: { energy, radiation },
-    lastWeek: { period: lastWeek, samples },
-    lastAvailable,
+    ...base,
+    selected: false,
+    week,
+    emptyLastWeek: lastWeek as Period | null,
   };
 }

@@ -2,51 +2,70 @@ import InfoHeader from "./InfoHeader";
 import KpiPanel from "./KpiPanel";
 import MissingDataNotice from "./MissingDataNotice";
 import SamplesTable from "./SamplesTable";
+import { WeekContent, WeekNavigationProvider } from "./WeekNavigation";
+import WeekSelector from "./WeekSelector";
+import { toDay } from "./format";
+import Divider from "@/components/Divider";
 import { getPhotovoltaicData } from "@/lib/higeco";
 import { computeDailyKpi, computeTotalKpi } from "@/lib/kpi";
 
-export default async function PhotovoltaicData() {
-  const { plant, device, log, items, lastWeek, lastAvailable } =
-    await getPhotovoltaicData();
+export interface IPhotovoltaicData {
+  /** Primo giorno della settimana scelta dall'utente, "YYYY-MM-DD". */
+  weekFrom?: string;
+}
+
+export default async function PhotovoltaicData({
+  weekFrom,
+}: IPhotovoltaicData) {
+  const { now, selected, plant, device, log, items, week, emptyLastWeek } =
+    await getPhotovoltaicData(weekFrom);
 
   console.log("[higeco]", {
     plant,
     device,
     log,
     items,
-    lastWeek,
-    lastAvailable,
+    week,
+    emptyLastWeek,
   });
 
-  // Senza dati nell'ultima settimana si mostra l'ultima settimana disponibile
-  const shown = lastAvailable ?? lastWeek;
-  const daily = computeDailyKpi(shown.samples);
+  const daily = computeDailyKpi(week.samples);
   const total = computeTotalKpi(daily);
 
   return (
-    <div className="mx-auto flex min-h-0 w-full flex-1 flex-col">
-      <div className="mx-auto max-w-5xl w-full flex-1 flex flex-col gap-4 p-6">
-        <InfoHeader
-          plant={plant}
-          device={device}
-          log={log}
-          period={shown.period}
-        />
-        {!lastWeek.samples.length && (
-          <MissingDataNotice
-            timeZone={plant.timezone}
-            lastWeek={lastWeek.period}
-            shown={lastAvailable?.period}
+    <WeekNavigationProvider>
+      <div className="mx-auto flex min-h-0 w-full flex-1 flex-col">
+        <div className="mx-auto max-w-5xl w-full flex-1 flex flex-col gap-4 p-6">
+          <InfoHeader
+            plant={plant}
+            device={device}
+            log={log}
+            period={week.period}
           />
-        )}
-        <KpiPanel daily={daily} total={total} />
-        <SamplesTable
-          timeZone={plant.timezone}
-          samples={shown.samples}
-          energyUnit={items.energy.unit}
-          radiationUnit={items.radiation.unit}
-        />
+          <Divider />
+          <WeekSelector
+            value={toDay(week.period.from, plant.timezone)}
+            max={toDay(now, plant.timezone)}
+            selected={selected}
+          >
+            {emptyLastWeek && (
+              <MissingDataNotice
+                timeZone={plant.timezone}
+                shown={week.samples.length ? week.period : undefined}
+              />
+            )}
+          </WeekSelector>
+          <WeekContent>
+            <KpiPanel daily={daily} total={total} />
+            <SamplesTable
+              timeZone={plant.timezone}
+              samples={week.samples}
+              energyUnit={items.energy.unit}
+              radiationUnit={items.radiation.unit}
+            />
+          </WeekContent>
+        </div>
       </div>
-    </div>
+    </WeekNavigationProvider>
   );
 }
