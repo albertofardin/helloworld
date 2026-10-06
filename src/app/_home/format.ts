@@ -15,3 +15,9 @@ export const formatNumber = (value: number | null, digits = 0) =>
         minimumFractionDigits: digits,
         maximumFractionDigits: digits,
       });
+
+export const formatPercent = (value: number | null) =>
+  value === null ? "n.d." : `${formatNumber(value, 1)} %`;
+
+// day è "YYYY-MM-DD" → "DD/MM/YYYY"
+export const formatDay = (day: string) => day.split("-").reverse().join("/");
