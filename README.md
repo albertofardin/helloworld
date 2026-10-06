@@ -39,7 +39,7 @@ La pagina dell'esercizio mostra, dall'alto:
 - tre card con i dati di Plant, Device e Log;
 - il selettore della settimana;
 - il riquadro **Performance Ratio**, con un selettore Giorno / Settimana;
-- la tabella dei campioni orari di Energia (kWh) e Irraggiamento (W/m²).
+- il riquadro **Dati orari** di Energia (kWh) e Irraggiamento (W/m²), con un selettore Grafico / Tabella.
 
 ## Scelta della settimana
 
@@ -93,7 +93,7 @@ bun run type-check   # tsc --noEmit
 
 ## Stack
 
-Next.js 16 (App Router), React 19, TypeScript, Tailwind 3, Radix.
+Next.js 16 (App Router), React 19, TypeScript, Tailwind 3, Radix, Recharts (grafici).
 
 ## Struttura
 
@@ -119,16 +119,16 @@ src/
 
 Componenti di `src/app/_home/`:
 
-| File                                                | Ruolo                                             |
-| --------------------------------------------------- | ------------------------------------------------- |
-| `PhotovoltaicData.tsx`                              | carica i dati, calcola il KPI e compone la pagina |
-| `InfoHeader.tsx`, `InfoCard.tsx`                    | card di Plant, Device e Log                       |
-| `WeekSelector.tsx`, `WeekNavigation.tsx`            | scelta della settimana e stato di caricamento     |
-| `MissingDataNotice.tsx`                             | avviso quando l'ultima settimana non ha dati      |
-| `KpiPanel.tsx`, `KpiTotal.tsx`, `KpiDailyTable.tsx` | PR settimanale e giornaliero                      |
-| `SamplesTable.tsx`                                  | tabella dei campioni orari                        |
-| `HomeLoading.tsx`                                   | spinner di caricamento                            |
-| `format.ts`                                         | formattazione di date e numeri                    |
+| File                                                       | Ruolo                                             |
+| ---------------------------------------------------------- | ------------------------------------------------- |
+| `PhotovoltaicData.tsx`                                     | carica i dati, calcola il KPI e compone la pagina |
+| `InfoHeader.tsx`, `InfoCard.tsx`                           | card di Plant, Device e Log                       |
+| `WeekSelector.tsx`, `WeekNavigation.tsx`                   | scelta della settimana e stato di caricamento     |
+| `MissingDataNotice.tsx`                                    | avviso quando l'ultima settimana non ha dati      |
+| `KpiPanel.tsx`, `KpiTotal.tsx`, `KpiDailyTable.tsx`        | PR settimanale e giornaliero                      |
+| `SamplesPanel.tsx`, `SamplesChart.tsx`, `SamplesTable.tsx` | dati orari, con selettore Grafico / Tabella       |
+| `HomeLoading.tsx`                                          | spinner di caricamento                            |
+| `format.ts`                                                | formattazione di date e numeri                    |
 
 Alias di import: `@/*` → `src/*`.
 

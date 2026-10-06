@@ -18,6 +18,9 @@
     --info: #2563eb;
     --succ: #059669;
     --warn: #ffcd48;
+    /* serie dei grafici, validate su --card */
+    --chart-blue: #2a78d6;
+    --chart-red: #e34948;
 
     --button: #141e41;
     --button-bg: #ffffff;

@@ -8,12 +8,22 @@ import AvatarUser from "@/components/AvatarUser";
 import Badge from "@/components/Badge";
 import Card from "@/components/Card";
 import { SelectType } from "@/components/Checkbox";
+import LineChart from "@/components/LineChart";
 import List from "@/components/List";
 import ListItem from "@/components/ListItem";
 import Pagination from "@/components/Pagination";
 import Text from "@/components/Text";
 
 const noop = () => null;
+
+const lineChartData = Array.from({ length: 49 }, (_, hour) => {
+  const sun = Math.max(0, Math.sin(((hour % 24) - 6) * (Math.PI / 12)));
+  return {
+    hour,
+    radiation: Math.round(800 * sun),
+    temperature: hour === 30 ? null : 14 + 9 * sun,
+  };
+});
 
 const data: IDocEntry[] = [
   {
@@ -216,6 +226,114 @@ const data: IDocEntry[] = [
         name: "labelClassName / iconClassName / avatarClassName",
         type: "string",
         description: "Classi per le singole parti.",
+      },
+      pClassName,
+      pStyle,
+    ],
+  },
+  {
+    id: "line-chart",
+    name: "LineChart",
+    description:
+      "Grafico a linee su un asse X numerico condiviso, basato su Recharts. Ogni serie ha un pannello con la propria scala Y, il titolo di ogni pannello ne riporta nome e colore e il tooltip riporta i valori di tutte le serie nel punto indicato.",
+    importCode: `import LineChart from "@/components/LineChart";`,
+    notes: [
+      "Le serie non condividono l'asse Y: unità e ordini di grandezza diversi restano leggibili senza un doppio asse.",
+      "Un valore null interrompe la linea in quel punto.",
+      "Il colore va scelto distinguibile anche per chi non percepisce bene i colori: --chart-blue e --chart-red del tema lo sono.",
+    ],
+    examples: [
+      {
+        title: "Due serie",
+        code: `<LineChart
+  data={data} // [{ hour: 0, radiation: 0, temperature: 14 }, …]
+  xKey="hour"
+  series={[
+    { key: "radiation", label: "Irraggiamento", unit: "W/m²", color: "var(--chart-red)", fromZero: true },
+    { key: "temperature", label: "Temperatura", unit: "°C", color: "var(--chart-blue)", digits: 1 },
+  ]}
+  xTicks={[0, 12, 24, 36, 48]}
+  formatXTick={hour => hour + "h"}
+  formatX={hour => "Ora " + hour}
+  panelHeight={140}
+/>`,
+        previewClassName: "block",
+        Demo: () => (
+          <LineChart
+            data={lineChartData}
+            xKey="hour"
+            series={[
+              {
+                key: "radiation",
+                label: "Irraggiamento",
+                unit: "W/m²",
+                color: "var(--chart-red)",
+                fromZero: true,
+              },
+              {
+                key: "temperature",
+                label: "Temperatura",
+                unit: "°C",
+                color: "var(--chart-blue)",
+                digits: 1,
+              },
+            ]}
+            xTicks={[0, 12, 24, 36, 48]}
+            formatXTick={hour => `${hour}h`}
+            formatX={hour => `Ora ${hour}`}
+            panelHeight={140}
+          />
+        ),
+      },
+    ],
+    props: [
+      {
+        name: "data",
+        type: "Record<string, number | null>[]",
+        required: true,
+        description:
+          "Un elemento per punto, con il valore X e quelli delle serie.",
+      },
+      {
+        name: "xKey",
+        type: "string",
+        required: true,
+        description: "Chiave numerica dell'asse X (es. un timestamp).",
+      },
+      {
+        name: "series",
+        type: "ILineChartSeries[]",
+        required: true,
+        description:
+          "Serie da disegnare: key, label, color e, opzionali, unit, digits e fromZero (asse Y da zero).",
+      },
+      {
+        name: "xTicks",
+        type: "number[]",
+        description:
+          "Posizioni delle tacche sull'asse X; se assenti le sceglie il grafico.",
+      },
+      {
+        name: "formatXTick",
+        type: "(x: number) => string",
+        description: "Etichetta di una tacca dell'asse X.",
+      },
+      {
+        name: "formatX",
+        type: "(x: number) => string",
+        description: "Intestazione del tooltip.",
+      },
+      {
+        name: "panelHeight",
+        type: "number",
+        def: "180",
+        description: "Altezza in px di ciascun pannello.",
+      },
+      {
+        name: "locale",
+        type: "string",
+        def: `"it-IT"`,
+        description: "Locale usato per formattare i numeri.",
       },
       pClassName,
       pStyle,

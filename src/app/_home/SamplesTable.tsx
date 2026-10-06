@@ -1,5 +1,4 @@
 import { formatDateTime, formatNumber } from "./format";
-import Card from "@/components/Card";
 import Text from "@/components/Text";
 import type { Sample } from "@/lib/higeco";
 
@@ -11,7 +10,7 @@ export interface ISamplesTable {
 }
 
 const headClassName =
-  "sticky top-0 border-0 border-b border-solid border-border bg-card px-4 py-2";
+  "sticky top-0 border-0 border-y border-solid border-border bg-card px-4 py-2";
 const cellClassName = "px-4 py-2 tabular-nums";
 
 export default function SamplesTable({
@@ -20,16 +19,8 @@ export default function SamplesTable({
   energyUnit,
   radiationUnit,
 }: ISamplesTable) {
-  if (!samples.length) {
-    return (
-      <Card className="p-6">
-        <Text className="text-muted-fg">Nessun dato da mostrare</Text>
-      </Card>
-    );
-  }
-
   return (
-    <Card className="block min-h-[320px] flex-1 overflow-auto">
+    <div className="min-h-[320px] flex-1 overflow-auto">
       <table className="w-full border-collapse">
         <thead>
           <tr>
@@ -37,10 +28,10 @@ export default function SamplesTable({
               <Text weight="bolder">Data e ora ({timeZone})</Text>
             </th>
             <th className={`${headClassName} text-right`}>
-              <Text weight="bolder">Energia ({energyUnit})</Text>
+              <Text weight="bolder">Irraggiamento ({radiationUnit})</Text>
             </th>
             <th className={`${headClassName} text-right`}>
-              <Text weight="bolder">Irraggiamento ({radiationUnit})</Text>
+              <Text weight="bolder">Energia ({energyUnit})</Text>
             </th>
           </tr>
         </thead>
@@ -51,15 +42,15 @@ export default function SamplesTable({
                 <Text>{formatDateTime(sample.timestamp, timeZone)}</Text>
               </td>
               <td className={`${cellClassName} text-right`}>
-                <Text>{formatNumber(sample.energy, 1)}</Text>
+                <Text>{formatNumber(sample.radiation)}</Text>
               </td>
               <td className={`${cellClassName} text-right`}>
-                <Text>{formatNumber(sample.radiation)}</Text>
+                <Text>{formatNumber(sample.energy, 1)}</Text>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-    </Card>
+    </div>
   );
 }

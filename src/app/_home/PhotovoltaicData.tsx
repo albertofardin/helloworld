@@ -1,7 +1,7 @@
 import InfoHeader from "./InfoHeader";
 import KpiPanel from "./KpiPanel";
 import MissingDataNotice from "./MissingDataNotice";
-import SamplesTable from "./SamplesTable";
+import SamplesPanel from "./SamplesPanel";
 import { WeekContent, WeekNavigationProvider } from "./WeekNavigation";
 import WeekSelector from "./WeekSelector";
 import { toDay } from "./format";
@@ -20,15 +20,6 @@ export default async function PhotovoltaicData({
   const { now, selected, plant, device, log, items, week, emptyLastWeek } =
     await getPhotovoltaicData(weekFrom);
 
-  console.log("[higeco]", {
-    plant,
-    device,
-    log,
-    items,
-    week,
-    emptyLastWeek,
-  });
-
   const daily = computeDailyKpi(week.samples);
   const total = computeTotalKpi(daily);
 
@@ -36,12 +27,7 @@ export default async function PhotovoltaicData({
     <WeekNavigationProvider>
       <div className="mx-auto flex min-h-0 w-full flex-1 flex-col">
         <div className="mx-auto max-w-5xl w-full flex-1 flex flex-col gap-4 p-6">
-          <InfoHeader
-            plant={plant}
-            device={device}
-            log={log}
-            period={week.period}
-          />
+          <InfoHeader plant={plant} device={device} log={log} />
           <Divider />
           <WeekSelector
             value={toDay(week.period.from, plant.timezone)}
@@ -57,7 +43,7 @@ export default async function PhotovoltaicData({
           </WeekSelector>
           <WeekContent>
             <KpiPanel daily={daily} total={total} />
-            <SamplesTable
+            <SamplesPanel
               timeZone={plant.timezone}
               samples={week.samples}
               energyUnit={items.energy.unit}

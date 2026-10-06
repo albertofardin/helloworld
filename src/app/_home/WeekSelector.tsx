@@ -29,7 +29,7 @@ export default function WeekSelector({
 
   return (
     <Card className="flex-wrap items-stretch justify-start gap-4 p-4">
-      <div className="flex flex-col gap-2">
+      <div className="w-full flex flex-col gap-2 items-stretch">
         <div className="flex items-center gap-1.5">
           <Icon size="sm" className="text-primary">
             event
@@ -38,9 +38,9 @@ export default function WeekSelector({
             Settimana dal
           </Text>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex-1 w-full flex flex-col items-center w-full gap-2 sm:flex-row">
           <FieldDate
-            className="w-[200px]"
+            className="flex-1 w-full"
             value={value}
             max={max}
             disabled={pending}

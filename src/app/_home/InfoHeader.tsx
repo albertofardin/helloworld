@@ -1,20 +1,13 @@
 import InfoCard from "./InfoCard";
-import { formatDateTime } from "./format";
-import type { Device, Log, Period, Plant } from "@/lib/higeco";
+import type { Device, Log, Plant } from "@/lib/higeco";
 
 export interface IInfoHeader {
   plant: Plant;
   device: Device;
   log: Log;
-  period: Period;
 }
 
-export default function InfoHeader({
-  plant,
-  device,
-  log,
-  period,
-}: IInfoHeader) {
+export default function InfoHeader({ plant, device, log }: IInfoHeader) {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
       <InfoCard
@@ -32,7 +25,6 @@ export default function InfoHeader({
         name={device.name}
         details={[
           { label: "ID", value: device.id },
-          { label: "IP", value: device.ip },
           { label: "Hardware", value: `${device.hwType} · v${device.version}` },
         ]}
       />
@@ -40,11 +32,7 @@ export default function InfoHeader({
         title="Log"
         icon="description"
         name={log.name}
-        details={[
-          { label: "ID", value: log.id },
-          { label: "Dal", value: formatDateTime(period.from, plant.timezone) },
-          { label: "Al", value: formatDateTime(period.to, plant.timezone) },
-        ]}
+        details={[{ label: "ID", value: log.id }]}
       />
     </div>
   );
